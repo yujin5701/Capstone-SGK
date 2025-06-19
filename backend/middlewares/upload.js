@@ -2,7 +2,7 @@
 const multer = require("multer");
 const multerS3 = require("multer-s3");
 const AWS = require("aws-sdk");
-
+const path = require("path");
 AWS.config.update({
   accessKeyId: process.env.AWS_ACCESS_KEY_ID,
   secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
@@ -15,16 +15,19 @@ const upload = multer({
   storage: multerS3({
     s3,
     bucket: process.env.AWS_S3_BUCKET,
-    // acl: "public-read", // S3에 퍼블릭 접근 가능
+    // acl: "public-read",
     contentType: multerS3.AUTO_CONTENT_TYPE,
     metadata: (req, file, cb) => {
       cb(null, { fieldName: file.fieldname });
     },
     key: (req, file, cb) => {
-      const fileName = Date.now() + "-" + file.originalname;
-      cb(null, fileName);
+      // ✅ 파일명을 ASCII-safe하게 변환
+      const ext = path.extname(file.originalname);
+      const fileName = Date.now() + ext;
+      cb(null, fileName); // 한글 제거!
     },
   }),
 });
+
 
 module.exports = upload;

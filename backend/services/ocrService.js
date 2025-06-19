@@ -1,24 +1,27 @@
 const vision = require("@google-cloud/vision");
+const axios = require("axios");
 
 const client = new vision.ImageAnnotatorClient({
   keyFilename: "/app/keys/dayfull-timetable-e933618fea72.json",
 });
 
-/**
- * 이미지 URL로 OCR 수행
- * @param {string} imageUrl - 공개된 S3 이미지 URL
- * @param {object} block - OCR 그리드 블록 정보 (디버깅용)
- */
-const performOCR = async (imageUrl, block) => {
-  const [result] = await client.textDetection({
-    image: {
-      source: {
-        imageUri: encodeURI(imageUrl), // ✅ URL 사용
+const performOCR = async (imageUrl) => {
+  try {
+    const response = await axios.get(imageUrl, { responseType: "arraybuffer" });
+    const imageBuffer = Buffer.from(response.data, "binary");
+
+    const [result] = await client.textDetection({
+      image: {
+        content: imageBuffer.toString("base64"),
       },
-    },
-  });
-  const detections = result.textAnnotations;
-  return detections && detections[0] ? detections[0].description : "";
+    });
+
+    const detections = result.textAnnotations;
+    return detections?.[0]?.description || "";
+  } catch (err) {
+    console.error("❌ OCR 오류 발생:", err);
+    throw err;
+  }
 };
 
 module.exports = { performOCR };
