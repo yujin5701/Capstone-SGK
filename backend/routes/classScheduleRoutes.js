@@ -1,30 +1,35 @@
 const express = require("express");
 const router = express.Router();
-const upload = require("../middlewares/upload");
+const upload = require("../middlewares/upload"); // S3 multer 미들웨어
 const { processImageAndExtractText } = require("../services/imageProcessor");
 const { matchLectures } = require("../services/lectureMatcher");
 
 router.post(
   "/class-schedule/upload",
-  upload.single("image"),
+  (req, res, next) => {
+    upload.single("image")(req, res, function (err) {
+      if (err) {
+        console.error("❌ Multer upload error:", err);
+        return res.status(500).json({ error: "Upload failed", detail: err.message });
+      }
+      next();
+    });
+  },
   async (req, res) => {
     console.log("📥 Received upload request. File info:", req.file);
-    if (!req.file) {
-      return res.status(400).json({ error: "No file uploaded" });
+
+    if (!req.file || !req.file.key) {
+      return res.status(400).json({ error: "No file uploaded or key missing" });
     }
 
     try {
-      // 1) S3 오브젝트 키만 서비스 레이어로 전달
-      const s3Key = req.file.key;
+      const s3Key = req.file.key; // ✅ S3 object key 전달
       console.log("🔑 S3 Object Key:", s3Key);
 
-      // 2) 이미지 다운로드 + OCR → 텍스트 추출
-      const detectedText = await processImageAndExtractText(s3Key);
+      const detectedBlocks = await processImageAndExtractText(s3Key);
+      const finalLectures = await matchLectures(detectedBlocks);
 
-      // 3) 강의 매칭
-      const finalLectures = await matchLectures(detectedText);
       console.log("✅ Returning final lectures:", finalLectures);
-
       return res.json({ lectures: finalLectures });
     } catch (error) {
       console.error("❌ Error in schedule generation:", error);
