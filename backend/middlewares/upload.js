@@ -14,7 +14,7 @@ const upload = multer({
   storage: multerS3({
     s3,
     bucket: process.env.AWS_S3_BUCKET,
-    acl: "public-read", // ✅ 이거 꼭 있어야 Vision API가 URL로 접근 가능
+    // acl: "public-read", // ✅ 이거 꼭 있어야 Vision API가 URL로 접근 가능
     contentType: multerS3.AUTO_CONTENT_TYPE,
     metadata: (req, file, cb) => {
       cb(null, { fieldName: file.fieldname });
