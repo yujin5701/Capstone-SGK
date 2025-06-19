@@ -1,26 +1,29 @@
 // backend/services/ocrService.js
 const vision = require("@google-cloud/vision");
 
-// 환경변수로부터 service account 자격 증명을 읽어 클라이언트 생성
 const client = new vision.ImageAnnotatorClient({
   projectId: process.env.GOOGLE_PROJECT_ID,
   credentials: {
     client_email: process.env.GOOGLE_CLIENT_EMAIL,
-    // Render 콘솔에 \n 을 리터럴로 넣었기 때문에 실제 개행으로 복원
+    // Render 환경변수에 "\n" 이 두 글자로 들어가 있으므로
+    // 이 replace 로 실제 개행(\n)으로 복원해 줍니다.
     private_key: process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, "\n"),
   },
+  // ← 반드시 REST 모드로 강제
+  fallback: "rest",
 });
 
 /**
- * 이미지 버퍼에 대해 OCR 수행
- * @param {Buffer} imageBuffer - Jimp 등으로 읽은 이미지 버퍼
- * @returns {Promise<string>} - 인식된 텍스트 (없으면 빈 문자열)
+ * 공개된 S3 이미지 URL을 받아 OCR 수행
+ * @param {string} imageUrl
+ * @returns {Promise<string>}
  */
-async function performOCR(imageBuffer) {
+async function performOCR(imageUrl) {
   const [result] = await client.textDetection({
-    image: { content: imageBuffer.toString("base64") },
+    image: { source: { imageUri: encodeURI(imageUrl) } },
   });
-  return result.textAnnotations?.[0]?.description?.trim() || "";
+  const detections = result.textAnnotations;
+  return detections?.[0]?.description || "";
 }
 
 module.exports = { performOCR };
