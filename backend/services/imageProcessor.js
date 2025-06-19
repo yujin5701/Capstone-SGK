@@ -44,7 +44,7 @@ const processImageAndExtractText = async (key) => {
     return [];
   }
 
-  const positions = gridPositions();  // [{ day, period, x1, y1, width, height }, ...]
+  const positions = gridPositions;  // [{ day, period, x1, y1, width, height }, ...]
   const detectedBlocks = [];
 
   // 3) 블록별로 OCR 수행
