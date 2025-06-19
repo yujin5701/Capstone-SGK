@@ -3,7 +3,7 @@
 const AWS = require("aws-sdk");
 const vision = require("@google-cloud/vision");
 const Jimp = require("jimp");
-const gridPositions = require("../utils/gridPositions");  // 요 부분 그대로 유지
+const gridPositions = require("../utils/gridPositions");  // 그리드 좌표 배열
 
 // REST 모드 Vision 클라이언트
 const client = new vision.ImageAnnotatorClient({
@@ -44,22 +44,30 @@ const processImageAndExtractText = async (key) => {
     return [];
   }
 
-  const positions = gridPositions;  // [{ day, period, x1, y1, width, height }, ...]
+  const positions = gridPositions;  
   const detectedBlocks = [];
 
   // 3) 블록별로 OCR 수행
-  for (const { day, period, x1, y1, width, height } of positions) {
+  for (const { day, period, x1, y1, x2, y2 } of positions) {
+    // x2,y2 로부터 너비(width)와 높이(height) 계산
+    const w = x2 - x1;
+    const h = y2 - y1;
+
     try {
-      const blockImg = image.clone().crop(x1, y1, width, height);
+      // 3.1) 지정 영역 크롭
+      const blockImg = image.clone().crop(x1, y1, w, h);
+
+      // 3.2) 버퍼로 추출 후 Base64 인코딩
       const buffer = await blockImg.getBufferAsync(Jimp.MIME_JPEG);
       const base64 = buffer.toString("base64");
 
-      // Vision OCR
+      // 3.3) Vision OCR 수행
       const [result] = await client.textDetection({
         image: { content: base64 },
       });
       const text = result.textAnnotations?.[0]?.description?.trim() || "";
 
+      // 3.4) 결과가 있으면 배열에 추가
       if (text) {
         detectedBlocks.push({
           day,
