@@ -10,24 +10,23 @@ AWS.config.update({
 });
 
 const s3 = new AWS.S3();
-
 const upload = multer({
   storage: multerS3({
     s3,
     bucket: process.env.AWS_S3_BUCKET,
-    // acl: "public-read",
+    acl: "public-read", // ✅ 이거 꼭 있어야 Vision API가 URL로 접근 가능
     contentType: multerS3.AUTO_CONTENT_TYPE,
     metadata: (req, file, cb) => {
       cb(null, { fieldName: file.fieldname });
     },
     key: (req, file, cb) => {
-      // ✅ 파일명을 ASCII-safe하게 변환
       const ext = path.extname(file.originalname);
       const fileName = Date.now() + ext;
-      cb(null, fileName); // 한글 제거!
+      cb(null, fileName);
     },
   }),
 });
+
 
 
 module.exports = upload;
