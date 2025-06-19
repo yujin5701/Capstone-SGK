@@ -4,22 +4,33 @@ const upload = require("../middlewares/upload");
 const { processImageAndExtractText } = require("../services/imageProcessor");
 const { matchLectures } = require("../services/lectureMatcher");
 
-router.post("/class-schedule/upload", upload.single("image"), async (req, res) => {
-  console.log("📥 Received upload request. File info:", req.file);
+router.post(
+  "/class-schedule/upload",
+  upload.single("image"),
+  async (req, res) => {
+    console.log("📥 Received upload request. File info:", req.file);
+    if (!req.file) {
+      return res.status(400).json({ error: "No file uploaded" });
+    }
 
-  try {
-    const imageUrl = req.file.location; // ✅ S3 업로드 후 생성된 URL
-    console.log("🌐 Image URL for Vision API:", imageUrl);
+    try {
+      // 1) S3 오브젝트 키만 서비스 레이어로 전달
+      const s3Key = req.file.key;
+      console.log("🔑 S3 Object Key:", s3Key);
 
-    const detectedText = await processImageAndExtractText(imageUrl);
-    const finalLectures = await matchLectures(detectedText);
+      // 2) 이미지 다운로드 + OCR → 텍스트 추출
+      const detectedText = await processImageAndExtractText(s3Key);
 
-    console.log("✅ Returning final lectures:", finalLectures);
-    res.json({ lectures: finalLectures });
-  } catch (error) {
-    console.error("❌ Error in schedule generation:", error);
-    res.status(500).json({ error: "Internal server error" });
+      // 3) 강의 매칭
+      const finalLectures = await matchLectures(detectedText);
+      console.log("✅ Returning final lectures:", finalLectures);
+
+      return res.json({ lectures: finalLectures });
+    } catch (error) {
+      console.error("❌ Error in schedule generation:", error);
+      return res.status(500).json({ error: "Internal server error" });
+    }
   }
-});
+);
 
 module.exports = router;
