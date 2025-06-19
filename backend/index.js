@@ -34,7 +34,11 @@ app.use(cors({
 }));
 app.use(express.json());
 
-app.get("/", (req, res) => res.send("OK"));
+app.get("/", (req, res) => {
+  console.log("💓 Health check hit");
+  res.send("OK");
+});
+
 
 app.use("/api/user", userRoutes);
 app.use("/api/lecture-schedules", lectureScheduleRoutes);
@@ -59,6 +63,7 @@ app.use('/api/places', placeRoutes);
 // app.use("/api", timetableRoutes);
 
 // 서버 실행
+const PORT = parseInt(process.env.PORT, 10) || 5000;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });
