@@ -24,7 +24,6 @@ const lectureScheduleRoutes = require('./routes/lectureScheduleRoutes');
 
 dotenv.config();
 const app = express();
-const PORT = process.env.PORT || 5000;
 
 app.use(cors({
   origin: ["http://localhost:5173", "http://localhost:3000", "https://capstone-api-smoky.vercel.app", "https://capstone-4uwf6wtk1-yeolmaes-projects.vercel.app/", 
