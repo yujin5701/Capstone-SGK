@@ -1,26 +1,22 @@
 const vision = require("@google-cloud/vision");
 
-const client = new vision.ImageAnnotatorClient({
-  keyFilename: "/app/keys/dayfull-timetable-e933618fea72.json",
-  // fallback: 'rest' 없이 gRPC 방식 그대로 사용 (또는 fallback: 'rest'도 가능)
-});
+const client = new vision.ImageAnnotatorClient({ fallback: 'rest' }); // ← 핵심
 
-const performOCR = async (imageUrl) => {
+async function performOCR(imageUrl) {
   try {
-    const [result] = await client.textDetection({
+    const [result] = await client.documentTextDetection({
       image: {
-        source: {
-          imageUri: encodeURI(imageUrl),  // ✅ 이미지 URL 직접 사용
-        },
+        source: { imageUri: imageUrl }, // ✅ S3 URL 그대로 넘기기
       },
     });
 
-    const detections = result.textAnnotations;
-    return detections?.[0]?.description || "";
+    const detections = result.fullTextAnnotation?.text || '';
+    return detections;
   } catch (err) {
-    console.error("❌ OCR 오류 발생:", err);
+    console.error("❌ OCR 처리 중 오류:", err);
     throw err;
   }
-};
+}
 
 module.exports = { performOCR };
+

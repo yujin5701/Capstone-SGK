@@ -1,40 +1,29 @@
 const gridPositions = require("../utils/gridPositions");
 const { performOCR } = require("./ocrService");
 const Jimp = require("jimp");
+const vision = require("@google-cloud/vision");
 
-/**
- * 전체 이미지 URL을 받아 한 번만 OCR 수행
- * @param {string} imageUrl - S3 공개 이미지 URL
- * @returns {Array} - 단일 블록 (전체 텍스트)로 처리
- */
-// ✅ 이미지 버퍼를 인자로 받도록 수정
+const client = new vision.ImageAnnotatorClient({
+  fallback: "rest", // 핵심 설정
+  keyFilename: "/app/keys/dayfull-timetable-e933618fea72.json", // JSON 키 경로
+});
 
 const processImageAndExtractText = async (imageUrl) => {
-  console.log("🧠 Starting OCR processing using URL...");
-
-  let ocrResult = "";
   try {
-    ocrResult = await performOCR(imageUrl); // ✅ URL 기반 OCR
-  } catch (e) {
-    console.error("❌ OCR error for imageUrl:", imageUrl, e);
-    return [];
-  }
-
-  console.log("📄 OCR result:\n", ocrResult);
-
-  // 기본 가공 (선택사항)
-  if (ocrResult && ocrResult.trim().length > 0) {
-    const lines = ocrResult.split("\n").map((l) => l.trim()).filter((l) => l.length > 0);
-    return [
-      {
-        day: "전체", // 이제 grid 기반 아님
-        period: "전체",
-        lectureNameCandidate: lines.join(" "),
+    console.log("🧠 Starting OCR processing using URL...");
+    const [result] = await client.documentTextDetection({
+      image: {
+        source: { imageUri: imageUrl },
       },
-    ];
-  }
+    });
 
-  return [];
+    const text = result.fullTextAnnotation?.text || "";
+    console.log("📄 OCR 결과:", text.slice(0, 100) + "...");
+    return text;
+  } catch (err) {
+    console.error("❌ OCR 처리 중 오류 발생:", err);
+    throw err;
+  }
 };
 
 module.exports = { processImageAndExtractText };
