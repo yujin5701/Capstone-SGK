@@ -7,7 +7,8 @@
 [![Redis](https://img.shields.io/badge/Redis-6.2-DC382D?style=flat&logo=redis&logoColor=white)](https://redis.io/)
 [![Docker](https://img.shields.io/badge/Docker-20.10-2496ED?style=flat&logo=docker&logoColor=white)](https://www.docker.com/)
 [![OpenAI](https://img.shields.io/badge/OpenAI-GPT4o-412991?style=flat&logo=openai&logoColor=white)](https://openai.com/)
-[![Perplexity](https://img.shields.io/badge/Perplexity-AI-black?style=flat)](https://www.perplexity.ai/)
+[![Perplexity](https://img.shields.io/badge/Perplexity-llama3--sonar-000000?style=flat)](https://www.perplexity.ai/)
+
 
 ---
 <br>
@@ -17,6 +18,12 @@
 > 대학생의 하루를 다채롭게 채워주는 스마트 일정 관리 서비스, **Dayfull**
 
 **Dayfull**은 대학 강의 시간표와 통합된 일정 자동 생성, 가고 싶은 장소 자동 배치, 그리고 개인화된 장소 추천 기능을 제공하는 **스마트 캘린더 플랫폼**입니다.
+
+
+### 테스트 주소 및 계정:
+- 테스트 주소:
+- 테스트 ID:
+- 테스트 PASSWORD:
 
 ---
 
@@ -602,6 +609,9 @@ Dayfull의 API는 RESTful 방식으로 제공되며, Postman을 활용한 기능
 Render의 무료 요금 플랜을 사용 중이므로 서버 접속 시 1~2분 가량의 활성화 시간이 소요될 수 있습니다.
 
 ### 1. 테스트 계정
+문서 상단에서도 확인 가능하다.
+**id**:
+**password**: 
 
 ### 2. 테스트 시간표 이미지
 
@@ -621,7 +631,7 @@ Render의 무료 요금 플랜을 사용 중이므로 서버 접속 시 1~2분 �
 
 | 라이브러리 | 설명 | 사용 목적 |
 |------------|------|-----------|
-| [Express](https://expressjs.com/ko/)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| Node.js 기반 백엔드 API 서버 프레임워크&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| REST API 서버 구성 및 라우팅 처리 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|
+| [Express](https://expressjs.com/ko/)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| Node.js 기반 백엔드 API 서버 프레임워크&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| REST API 서버 구성 및 라우팅 처리 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|
 | [React Native](https://reactnative.dev/) | 모바일 앱 UI 프레임워크 | 프론트엔드 화면 구성 및 타임라인 UI 구현 |
 | [PostgreSQL](https://www.postgresql.org/) | 오픈소스 관계형 데이터베이스 | 사용자, 일정, 장소, 추천 결과 등의 데이터 저장 |
 | [Redis](https://redis.io/) | In-memory 데이터 저장소 | 사용자 선호 키워드 캐싱 및 빠른 데이터 접근 |
@@ -629,7 +639,21 @@ Render의 무료 요금 플랜을 사용 중이므로 서버 접속 시 1~2분 �
 | [Dotenv](https://github.com/motdotla/dotenv) | `.env` 파일의 환경변수 로더 | API 키 및 DB 비밀번호 등의 민감 정보 관리 |
 | [Docker](https://www.docker.com/) | 컨테이너 기반 실행 환경 도구 | PostgreSQL, Redis, 백엔드, 프론트 통합 실행 구성 |
 | [Docker Compose](https://docs.docker.com/compose/) | 멀티 컨테이너 환경 자동화 툴 | 모든 서비스 컨테이너화, 자동 빌드 및 실행 |
-
+| [@google-cloud/vision](https://github.com/googleapis/nodejs-vision) | Google Cloud Vision API 클라이언트 | 이미지 텍스트 인식(OCR) |
+| [Jimp](https://github.com/jimp-dev/jimp) | Node.js 이미지 처리 라이브러리 | 이미지 전처리 (크기 조정, 자르기 등) |
+| [Multer](https://github.com/expressjs/multer) | Node.js 파일 업로드 미들웨어 | 이미지 업로드 처리 |
+| [jsonwebtoken](https://github.com/auth0/node-jsonwebtoken) | JWT 생성 및 검증 라이브러리 | 사용자 인증 및 토큰 관리 |
+| [bcryptjs](https://github.com/dcodeIO/bcrypt.js) | 비밀번호 해시 처리 라이브러리 | 안전한 비밀번호 저장 |
+| [node-cron](https://github.com/node-cron/node-cron) | Node.js 스케줄링 라이브러리 | 월간 반복 일정 자동 등록 |
+| [uuid](https://github.com/uuidjs/uuid) | UUID 고유 ID 생성기 | 사용자/일정 고유 ID 생성 |
+| [react-router-dom](https://github.com/remix-run/react-router) | React 라우팅 라이브러리 | 화면 간 페이지 전환 처리 |
+| [React Big Calendar](https://github.com/jquense/react-big-calendar) | 일정 관리용 캘린더 UI 컴포넌트 | 시간표 및 일정 시각화 |
+| [React Datepicker](https://reactdatepicker.com/) | 날짜 선택 UI 컴포넌트 | 날짜 입력 (예: 개강일/종강일 선택) |
+| [React Draggable](https://github.com/react-grid-layout/react-draggable) | 드래그 가능한 UI 요소 구현 | UI 사용자 경험 향상 |
+| [React Swipeable](https://www.npmjs.com/package/react-swipeable) | 터치 기반 스와이프 기능 제공 | 모바일 UX 향상 |
+| [React Icons](https://react-icons.github.io/react-icons/) | 다양한 아이콘 라이브러리 통합 제공 | UI 꾸밈 및 시각적 가독성 향상 |
+| [Moment.js](https://momentjs.com/) | 날짜/시간 처리 라이브러리 | 일정 생성 및 시간 계산 |
+| [Vite](https://vitejs.dev/) | 빠른 프론트엔드 개발 빌드 도구 | 개발 서버 및 번들링 |
 
 
 
