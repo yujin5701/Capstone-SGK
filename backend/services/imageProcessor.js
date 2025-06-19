@@ -44,3 +44,6 @@ async function initializeVisionClient() {
 
   return client;
 }
+module.exports = {
+  processImageAndExtractText,
+};
