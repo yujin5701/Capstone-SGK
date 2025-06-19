@@ -1,5 +1,5 @@
-const vision = require("@google-cloud/vision");
 const axios = require("axios");
+const vision = require("@google-cloud/vision");
 
 const client = new vision.ImageAnnotatorClient({
   keyFilename: "/app/keys/dayfull-timetable-e933618fea72.json",
@@ -7,12 +7,18 @@ const client = new vision.ImageAnnotatorClient({
 
 const performOCR = async (imageUrl) => {
   try {
-    const response = await axios.get(imageUrl, { responseType: "arraybuffer" });
-    const imageBuffer = Buffer.from(response.data, "binary");
+    const response = await axios.get(imageUrl, {
+      responseType: "arraybuffer",
+      headers: {
+        // 👇 명시적으로 압축 사용 안 함 (gzip 문제 방지)
+        "Accept-Encoding": "identity"
+      }
+    });
 
+    const imageBuffer = Buffer.from(response.data); // binary → buffer
     const [result] = await client.textDetection({
       image: {
-        content: imageBuffer.toString("base64"),
+        content: imageBuffer.toString("base64"), // buffer to base64
       },
     });
 
