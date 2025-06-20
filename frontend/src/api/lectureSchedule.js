@@ -1,6 +1,7 @@
 // src/api/lectureSchedule.js
 export const generateSchedulesFromLectures = async (userId, semesterStart, semesterEnd, lectures) => {
-  const response = await axios.post("/api/schedule/generate-from-lectures", {
+  // → lectureScheduleRoutes.js 에 정의된   POST /api/lecture-schedules/generate
+  const response = await axios.post("/api/lecture-schedules/generate", {
     userId,
     semesterStart,
     semesterEnd,
