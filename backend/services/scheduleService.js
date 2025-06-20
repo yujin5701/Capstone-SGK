@@ -300,6 +300,9 @@ exports.generateMonthRecurringSchedules = async () => {
   };
 };
 
+// index.js 의 cron.schedule 에서 호출하는 이름으로 alias 추가
+exports.generateNextMonthRecurringSchedules = exports.generateMonthRecurringSchedules;
+
 exports.createAutoSchedule = async ({ user_id, place, source = "recommendation", color, recommendation_id}) => {
    // 1. 좌표가 없으면 geocode로 보완
    console.log("🧠 일정 로딩 시작");
