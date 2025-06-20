@@ -1,42 +1,28 @@
 import React, { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { generateSchedulesFromLectures } from "../api/lectureSchedule";
+import { generateSchedulesFromLectures, getUserSchedules } from "../api/lectureSchedule";
 
 const ScanningScreen = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { lectures, startDate, endDate } = location.state || {};
 
-  
+
   useEffect(() => {
     const run = async () => {
       try {
-        const userId = localStorage.getItem("user_id");
-        const offset = 9 * 60 * 60 * 1000;
-
-        startDate.setHours(9, 0, 0);
-        endDate.setHours(9, 0, 0);
-
-        const semesterStart = new Date(startDate.getTime() - offset).toISOString();
-        const semesterEnd = new Date(endDate.getTime() - offset).toISOString();
-
-        const schedules = await generateSchedulesFromLectures(
-          userId,
-          semesterStart,
-          semesterEnd,
-          lectures
-        );
-
+        // 1) OCR → generate
+        await generateSchedulesFromLectures(userId, semesterStart, semesterEnd, lectures);
+  
+        // 2) 새로 생성된 실제 일정 가져오기
+        const schedules = await getUserSchedules(userId);
+  
         navigate("/timelineview", { state: { schedules } });
-      } catch (err) {
-        console.error("일정 생성 실패:", err);
-        alert("일정 생성 중 오류가 발생했습니다.");
-        navigate("/dateselection");
-      }
+      } catch (err) { … }
     };
-
     run();
   }, []);
+  
 
   return (
     <div style={styles.container}>
